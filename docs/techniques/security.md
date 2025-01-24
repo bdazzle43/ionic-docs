@@ -1,6 +1,5 @@
 ---
 title: Security
-disableHtmlPreviews: true
 ---
 
 <head>
@@ -54,8 +53,6 @@ const element = <a href={userInput}>Click Me!</a>;
 
 If the developer needs to achieve more comprehensive sanitization, they can use the [sanitize-html](https://www.npmjs.com/package/sanitize-html) package.
 
-To learn more about the built-in protections that React and JSX provide, see the [React JSX Documentation](https://reactjs.org/docs/introducing-jsx.html#jsx-prevents-injection-attacks).
-
 ### Vue
 
 Vue does not provide any type of sanitizing methods built in. It is recommended that developers use a package such as [sanitize-html](https://www.npmjs.com/package/sanitize-html).
@@ -83,7 +80,11 @@ Ionic Framework provides an application config option called `sanitizerEnabled` 
 Developers can also choose to eject from the sanitizer in certain scenarios. Ionic Framework provides the `IonicSafeString` class that allows developers to do just that.
 
 :::note
-In order to bypass the sanitizer and use unsanitized custom HTML in the relevant Ionic components, `innerHTMLTemplatesEnabled` must be set to `true` in the Ionic config. See [Enabling Custom HTML Parsing](#enabling-custom-html-parsing-via-innerhtml) for more information.
+In order to bypass the sanitizer and use unsanitized custom HTML in the relevant Ionic components, `innerHTMLTemplatesEnabled` must be set to `true` in the Ionic config.
+
+`IonicSafeString` should not be used if `innerHTMLTemplatesEnabled` is set to `false`.
+
+See [Enabling Custom HTML Parsing](#enabling-custom-html-parsing-via-innerhtml) for more information.
 :::
 
 #### Usage
@@ -94,6 +95,7 @@ In order to bypass the sanitizer and use unsanitized custom HTML in the relevant
   defaultValue="angular"
   values={[
     { value: 'angular', label: 'Angular' },
+    { value: 'angular-standalone', label: 'Angular (Standalone)' },
     { value: 'javascript', label: 'JavaScript' },
     { value: 'react', label: 'React' },
   ]
@@ -102,6 +104,25 @@ In order to bypass the sanitizer and use unsanitized custom HTML in the relevant
 
 ```tsx
 import { IonicSafeString, ToastController } from '@ionic/angular';
+
+...
+
+constructor(private toastController: ToastController) {}
+
+async presentToast() {
+  const toast = await this.toastController.create({
+      message: new IonicSafeString('<ion-button>Hello!</ion-button>'),
+      duration: 2000
+  });
+  toast.present();
+}
+
+```
+</TabItem>
+<TabItem value="angular-standalone">
+
+```tsx
+import { IonicSafeString, ToastController } from '@ionic/angular/standalone';
 
 ...
 
@@ -160,3 +181,53 @@ export const ToastExample: React.FC = () => {
 </TabItem>
 </Tabs>
 ````
+
+## Content Security Policies (CSP)
+
+A [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) is a security mechanism that helps protect web applications against certain types of attacks, such as cross-site scripting (XSS) and data injection. It is implemented through an HTTP header that instructs the browser on which sources of content, such as scripts, stylesheets, and images, are allowed to be loaded and executed on a web page.
+
+The main purpose of a CSP is to mitigate the risks associated with code injection attacks. By defining a policy, web developers can specify from which domains or sources the browser should allow the loading and execution of various types of content. This effectively limits the potential damage that can be caused by malicious scripts or unauthorized content.
+
+### Enabling CSPs
+
+Developers can assign a CSP to their application by setting a meta tag with the policy details and the expected nonce value on script and style tags.
+
+```html
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; script-src 'self' 'nonce-randomNonceGoesHere'; style-src 'self' 'nonce-randomNonceGoesHere';"
+/>
+```
+
+### Ionic and CSP
+
+Ionic Framework provides a function to help developers set the nonce value used when constructing the web component stylesheets. This function should be called before any Ionic components are loaded. This is required to pass the nonce value to the web components so that they can be used in a CSP environment.
+
+```ts
+import { setNonce } from '@ionic/core/loader';
+
+setNonce('randomNonceGoesHere');
+```
+
+:::tip
+
+In Angular this can be called in the `main.ts` file, before the application is bootstrapped.
+
+:::
+
+For more information on how to use CSPs with Stencil web components, see the [Stencil documentation](https://stenciljs.com/docs/csp-nonce).
+
+### Angular
+
+Starting in Angular 16, Angular provides two options for setting the nonce value.
+
+1. Set the `ngCspNonce` attribute on the root application element as `<app ngCspNonce="randomNonceGoesHere"></app>`. Use this approach if you have access to server-side templating that can add the nonce both to the header and the `index.html` when constructing the response.
+2. Provide the nonce using the [`CSP_NONCE`](https://angular.io/api/core/CSP_NONCE) injection token. Use this approach if you have access to the nonce at runtime and you want to be able to cache the `index.html`.
+
+:::tip
+
+If providing the `CSP_NONCE` injection token, set the provider in your `AppModule` for module projects or within the `bootstrapApplication` for standalone projects.
+
+:::
+
+For more information on how to use CSPs with Angular, see the [Angular documentation](https://angular.io/guide/security#content-security-policy).

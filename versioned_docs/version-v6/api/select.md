@@ -6,7 +6,7 @@ import Props from '@ionic-internal/component-api/v6/select/props.md';
 import Events from '@ionic-internal/component-api/v6/select/events.md';
 import Methods from '@ionic-internal/component-api/v6/select/methods.md';
 import Parts from '@ionic-internal/component-api/v6/select/parts.md';
-import CustomProps from '@ionic-internal/component-api/v6/select/custom-props.md';
+import CustomProps from '@ionic-internal/component-api/v6/select/custom-props.mdx';
 import Slots from '@ionic-internal/component-api/v6/select/slots.md';
 
 <head>
@@ -57,9 +57,9 @@ By adding the `multiple` attribute to select, users are able to select multiple 
 
 Note: the `action-sheet` and `popover` interfaces will not work with multiple selection.
 
-import MulipleSelectionExample from '@site/static/usage/v6/select/basic/multiple-selection/index.md';
+import MultipleSelectionExample from '@site/static/usage/v6/select/basic/multiple-selection/index.md';
 
-<MulipleSelectionExample />
+<MultipleSelectionExample />
 
 ## Responding to Interaction
 

@@ -65,7 +65,7 @@ const Tab2: React.FC = () => {
 
 Save the file, and if you’re not already, restart the development server in your browser by running `ionic serve`. On the Photo Gallery tab, click the Camera button. If your computer has a webcam of any sort, a modal window appears. Take a selfie!
 
-![Camera API on the web](/img/guides/first-app-cap-ng/camera-web.png)
+![A photo gallery app displaying a webcam selfie.](/img/guides/first-app-cap-ng/camera-web.png 'Webcam Selfie in Photo Gallery')
 
 _(Your selfie is probably much better than mine)_
 
@@ -88,7 +88,7 @@ Back at the top of the function (right after the call to `usePhotoGallery`, we w
 const [photos, setPhotos] = useState<UserPhoto[]>([]);
 ```
 
-When the camera is done taking a picture, the resulting Photo returned from Capacitor will be stored in the `photo` variable. We want to create a new photo object and add it to the photos state array. We make sure we don't accidently mutate the current photos array by making a new array, and then call `setPhotos` to store the array into state. Update the `takePhoto` method and add this code after the getPhoto call:
+When the camera is done taking a picture, the resulting Photo returned from Capacitor will be stored in the `photo` variable. We want to create a new photo object and add it to the photos state array. We make sure we don't accidentally mutate the current photos array by making a new array, and then call `setPhotos` to store the array into state. Update the `takePhoto` method and add this code after the getPhoto call:
 
 ```tsx
 const fileName = new Date().getTime() + '.jpeg';

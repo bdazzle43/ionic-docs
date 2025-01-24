@@ -37,12 +37,12 @@
     {
       text: 'Confirm',
       handler: (value) => {
-        window.alert(`You selected: ${value.languages.value}`);
+        console.log(`You selected: ${value.languages.value}`);
       },
     },
   ];
 
-  picker.addEventListener('ionPickerDidDismiss', (ev) => {
+  picker.addEventListener('ionPickerDidDismiss', (event) => {
     picker.isOpen = false;
   });
 </script>
