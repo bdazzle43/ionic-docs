@@ -1,17 +1,17 @@
 import sdk from '@stackblitz/sdk';
 
-// The default title to use for Stackblitz examples (when not overwritten)
+// The default title to use for StackBlitz examples (when not overwritten)
 const DEFAULT_EDITOR_TITLE = 'Ionic Docs Example';
-// The default description to use for Stackblitz examples (when not overwritten)
+// The default description to use for StackBlitz examples (when not overwritten)
 const DEFAULT_EDITOR_DESCRIPTION = '';
 
 export interface EditorOptions {
   /**
-   * The title of the Stackblitz example.
+   * The title of the StackBlitz example.
    */
   title?: string;
   /**
-   * The description of the Stackblitz example.
+   * The description of the StackBlitz example.
    */
   description?: string;
 
@@ -20,21 +20,21 @@ export interface EditorOptions {
   };
 
   /**
-   * List of dependencies to add to the Stackblitz example.
+   * List of dependencies to add to the StackBlitz example.
    * The key is the name of the dependency and the value is the version.
    */
   dependencies?: {
     [key: string]: string;
-  }
+  };
 
   /**
    * `true` if `ion-app` and `ion-content` should automatically be injected into the
-   * Stackblitz example.
+   * StackBlitz example.
    */
   includeIonContent: boolean;
 
   /**
-   * The mode of the Stackblitz example.
+   * The mode of the StackBlitz example.
    */
   mode?: string;
 
@@ -68,7 +68,7 @@ const openHtmlEditor = async (code: string, options?: EditorOptions) => {
 
   const package_json = defaultFiles[3];
 
-  files[indexHtml] = files[indexHtml].replace(/{{ TEMPLATE }}/g, code).replace(
+  files[indexHtml] = defaultFiles[1].replace(/{{ TEMPLATE }}/g, code).replace(
     '</head>',
     `
   <script>
@@ -105,67 +105,63 @@ const openHtmlEditor = async (code: string, options?: EditorOptions) => {
 const openAngularEditor = async (code: string, options?: EditorOptions) => {
   const defaultFiles = await loadSourceFiles(
     [
+      'angular/package.json',
+      'angular/angular.json',
+      'angular/tsconfig.json',
+      'angular/tsconfig.app.json',
       'angular/main.ts',
-      'angular/app.module.ts',
-      'angular/app.component.ts',
+      'angular/index.html',
+      'angular/app.routes.ts',
+      options?.includeIonContent ? 'angular/app.component.withContent.ts' : 'angular/app.component.ts',
       'angular/app.component.css',
       options?.includeIonContent ? 'angular/app.component.withContent.html' : 'angular/app.component.html',
       'angular/example.component.ts',
       'angular/styles.css',
       'angular/global.css',
       'angular/variables.css',
-      'angular/angular.json',
-      'angular/tsconfig.json',
-      'angular/package.json',
     ],
     options.version
   );
 
-  const appModule = 'src/app/app.module.ts';
-  const files = {
-    'src/main.ts': defaultFiles[0],
-    'src/polyfills.ts': `import 'zone.js/dist/zone';`,
-    [appModule]: defaultFiles[1],
-    'src/app/app.component.ts': defaultFiles[2],
-    'src/app/app.component.css': defaultFiles[3],
-    'src/app/app.component.html': defaultFiles[4],
-    'src/app/example.component.ts': defaultFiles[5],
-    'src/app/example.component.html': code,
-    'src/app/example.component.css': '',
-    'src/index.html': '<app-root></app-root>',
-    'src/styles.css': defaultFiles[6],
-    'src/global.css': defaultFiles[7],
-    'src/theme/variables.css': defaultFiles[8],
-    'angular.json': defaultFiles[9],
-    'tsconfig.json': defaultFiles[10],
-    ...options?.files,
-    ...options?.dependencies,
-  };
+  const package_json = JSON.parse(defaultFiles[0]);
 
-  const package_json = defaultFiles[11];
-
-  files[appModule] = files[appModule].replace(
-    'IonicModule.forRoot({})',
-    `IonicModule.forRoot({ mode: '${options?.mode}' })`
-  );
-
-  let dependencies = {};
-  try {
-    dependencies = {
-      ...dependencies,
-      ...JSON.parse(package_json).dependencies,
-      ...options?.dependencies,
+  if (options?.dependencies) {
+    package_json.dependencies = {
+      ...package_json.dependencies,
+      ...options.dependencies,
     };
-  } catch (e) {
-    console.error('Failed to parse package.json contents', e);
   }
 
+  const main = 'src/main.ts';
+
+  const files = {
+    'package.json': JSON.stringify(package_json, null, 2),
+    'angular.json': defaultFiles[1],
+    'tsconfig.json': defaultFiles[2],
+    'tsconfig.app.json': defaultFiles[3],
+    [main]: defaultFiles[4],
+    'src/index.html': defaultFiles[5],
+    'src/polyfills.ts': `import 'zone.js';`,
+    'src/app/app.routes.ts': defaultFiles[6],
+    'src/app/app.component.ts': defaultFiles[7],
+    'src/app/app.component.css': defaultFiles[8],
+    'src/app/app.component.html': defaultFiles[9],
+    'src/app/example.component.ts': defaultFiles[10],
+    'src/app/example.component.html': code,
+    'src/app/example.component.css': '',
+    'src/styles.css': defaultFiles[11],
+    'src/global.css': defaultFiles[12],
+    'src/theme/variables.css': defaultFiles[13],
+    ...options?.files,
+  };
+
+  files[main] = files[main].replace('provideIonicAngular()', `provideIonicAngular({ mode: '${options?.mode}' })`);
+
   sdk.openProject({
-    template: 'angular-cli',
+    template: 'node',
     title: options?.title ?? DEFAULT_EDITOR_TITLE,
     description: options?.description ?? DEFAULT_EDITOR_DESCRIPTION,
     files,
-    dependencies,
   });
 };
 
@@ -179,22 +175,36 @@ const openReactEditor = async (code: string, options?: EditorOptions) => {
       'react/package.json',
       'react/package-lock.json',
       'react/index.html',
+      'react/vite.config.js',
+      'react/browserslistrc',
+      'react/eslintrc.js',
     ],
     options.version
   );
 
+  const package_json = JSON.parse(defaultFiles[4]);
+
+  if (options?.dependencies) {
+    package_json.dependencies = {
+      ...package_json.dependencies,
+      ...options.dependencies,
+    };
+  }
+
   const appTsx = 'src/App.tsx';
   const files = {
-    'public/index.html': defaultFiles[6],
+    '.eslintrc.js': defaultFiles[9],
+    '.browserslistrc': defaultFiles[8],
+    'vite.config.js': defaultFiles[7],
+    'index.html': defaultFiles[6],
     'src/index.tsx': defaultFiles[0],
     [appTsx]: defaultFiles[1],
     'src/main.tsx': code,
     'src/theme/variables.css': defaultFiles[2],
     'tsconfig.json': defaultFiles[3],
-    'package.json': defaultFiles[4],
+    'package.json': JSON.stringify(package_json, null, 2),
     'package-lock.json': defaultFiles[5],
     ...options?.files,
-    ...options?.dependencies,
     '.stackblitzrc': `{
   "startCommand": "yarn run start"
 }`,
@@ -227,6 +237,15 @@ const openVueEditor = async (code: string, options?: EditorOptions) => {
     options.version
   );
 
+  const package_json = JSON.parse(defaultFiles[0]);
+
+  if (options?.dependencies) {
+    package_json.dependencies = {
+      ...package_json.dependencies,
+      ...options.dependencies,
+    };
+  }
+
   const mainTs = 'src/main.ts';
   const files = {
     'src/App.vue': defaultFiles[6],
@@ -236,7 +255,7 @@ const openVueEditor = async (code: string, options?: EditorOptions) => {
     'src/theme/variables.css': defaultFiles[3],
     'index.html': defaultFiles[2],
     'vite.config.ts': defaultFiles[4],
-    'package.json': defaultFiles[0],
+    'package.json': JSON.stringify(package_json, null, 2),
     'package-lock.json': defaultFiles[1],
     'tsconfig.json': defaultFiles[7],
     'tsconfig.node.json': defaultFiles[8],
@@ -254,7 +273,7 @@ const openVueEditor = async (code: string, options?: EditorOptions) => {
   );
 
   /**
-   * We have to use Stackblitz web containers here (node template), due
+   * We have to use StackBlitz web containers here (node template), due
    * to multiple issues with Vite, Vue/Vue Router and Vue 3's script setup.
    *
    * https://github.com/stackblitz/core/issues/1308

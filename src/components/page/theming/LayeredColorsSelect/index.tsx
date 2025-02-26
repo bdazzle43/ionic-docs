@@ -6,11 +6,11 @@ import ColorDot from '../ColorDot';
 
 import InputWrapper from '../InputWrapper';
 
-import useThemeContext from '@theme/hooks/useThemeContext';
+import { useColorMode } from '@docusaurus/theme-common';
 import clsx from 'clsx';
 
 export default function LayeredColorsSelect({ ...props }) {
-  const { isDarkTheme } = useThemeContext();
+  const { colorMode } = useColorMode();
 
   const [color, setColor] = useState('primary');
   const el = useRef<HTMLDivElement>(null);
@@ -64,12 +64,15 @@ export default function LayeredColorsSelect({ ...props }) {
     <div
       {...props}
       ref={el}
-      className={clsx(styles.layeredColorsSelect, styles[`layeredColorsSelect${isDarkTheme ? 'Dark' : 'Light'}`])}
+      className={clsx(
+        styles.layeredColorsSelect,
+        styles[`layeredColorsSelect${colorMode === 'dark' ? 'Dark' : 'Light'}`]
+      )}
     >
       <div className={styles.selectRow}>
         <ColorDot color={`var(--ion-color-${color})`} />
         <InputWrapper>
-          <select value={color} onChange={(ev) => setColor((ev.target as HTMLSelectElement).value)}>
+          <select value={color} onChange={(event) => setColor((event.target as HTMLSelectElement).value)}>
             <option value="primary">Primary</option>
             <option value="secondary">Secondary</option>
             <option value="tertiary">Tertiary</option>

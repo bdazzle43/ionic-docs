@@ -11,7 +11,7 @@ import Props from '@ionic-internal/component-api/v5/item/props.md';
 import Events from '@ionic-internal/component-api/v5/item/events.md';
 import Methods from '@ionic-internal/component-api/v5/item/methods.md';
 import Parts from '@ionic-internal/component-api/v5/item/parts.md';
-import CustomProps from '@ionic-internal/component-api/v5/item/custom-props.md';
+import CustomProps from '@ionic-internal/component-api/v5/item/custom-props.mdx';
 import Slots from '@ionic-internal/component-api/v5/item/slots.md';
 
 # ion-item
@@ -1033,13 +1033,13 @@ export class ItemExample {
         <ion-item>
           <ion-label>Item</ion-label>
         </ion-item>
-        ,<ion-item lines="none">
+        <ion-item lines="none">
           <ion-label>No Lines Item</ion-label>
         </ion-item>,<ion-item>
           <ion-label class="ion-text-wrap">
             Multiline text that should wrap when it is too long to fit on one line in the item.
           </ion-label>
-        </ion-item>,
+        </ion-item>
         <ion-item>
           <ion-label class="ion-text-wrap">
             <ion-text color="primary">
@@ -1051,7 +1051,6 @@ export class ItemExample {
             </ion-text>
           </ion-label>
         </ion-item>
-        ,
         <ion-item lines="full">
           <ion-label>Item with Full Lines</ion-label>
         </ion-item>

@@ -82,7 +82,7 @@ Since pages and components contain both TypeScript code and HTML template markup
 
 ```tsx
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TabsPage } from './tabs.page';
 
@@ -91,13 +91,11 @@ describe('TabsPage', () => {
   let fixture: ComponentFixture<TabsPage>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [TabsPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(TabsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -295,7 +293,7 @@ When an `@ionic/angular` application is generated, a default end-to-end test app
 
 - `protractor.conf.js` - the Protractor configuration file
 - `tsconfig.e2e.json` - specific TypeScript configuration for the testing application
-- `src/app.po.ts` - a page object containing methods that navigate the application, query elements in the DOM, and maninpulate elements on the page
+- `src/app.po.ts` - a page object containing methods that navigate the application, query elements in the DOM, and manipulate elements on the page
 - `src/app.e2e-spec.ts` - a testing script
 
 #### Page Objects

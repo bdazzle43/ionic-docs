@@ -1,8 +1,6 @@
 ---
 title: Advanced Theming
 sidebar_label: Advanced
-initialTab: 'preview'
-inlineHtmlPreviews: true
 ---
 
 import CodeColor from '@components/page/theming/CodeColor';
@@ -34,9 +32,9 @@ The example below demonstrates how to use `theme-color` to style the browser int
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#eb445a" />
 ```
 
-| Light Mode                                                                             | Dark Mode                                                                            |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| ![Application with theme-color meta in light mode](/img/theming/theme-color-light.png) | ![Application with theme-color meta in dark mode](/img/theming/theme-color-dark.png) |
+| Light Mode                                                                                                         | Dark Mode                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| ![The light mode theme color in a browser interface.](/img/theming/theme-color-light.png 'Light Mode Theme Color') | ![The dark mode theme color in a browser interface.](/img/theming/theme-color-dark.png 'Dark Mode Theme Color') |
 
 The `theme-color` meta can also be used to customize the toolbar in Safari on macOS Monterey or newer.
 
@@ -87,7 +85,7 @@ While the application and stepped variables in the themes section are useful for
 
 ### The Alpha Problem
 
-There is not yet full <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Browser_compatibility" target="_blank">browser support</a> for alpha use of a hex color. The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb()_and_rgba()" target="_blank">rgba()</a> function only accepts a value in `R, G, B, A` (Red, Green, Blue, Alpha) format. The following code shows examples of correct and incorrect values passed to `rgba()`.
+There is not yet full <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Browser_compatibility" target="_blank">browser support</a> for alpha use of a hex color. The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb()_and_rgba()" target="_blank">`rgba()`</a> function only accepts a value in `R, G, B, A` (Red, Green, Blue, Alpha) format. The following code shows examples of correct and incorrect values passed to `rgba()`.
 
 ```css
 /* These examples use the same color: blueviolet. */
